@@ -10,6 +10,10 @@ Just execute the generator with the following command:
 
 `java -jar ProjectGenerator.jar <project name> <args>`
 
+Then cd to the directory \<project name\> and hack away!
+
+When you are ready to compile and test, just run the command `make`.
+
 ### Arguments
 
 * -h | -help : help menu
@@ -22,3 +26,17 @@ Just execute the generator with the following command:
 
 * java_default - this is the default if no template is specified
 * cpp_default - the default C++ template
+
+### Examples
+
+#### Generates a Java project from Kattis called Acm:
+
+`java -jar ProjectGenerator.jar Acm -kattis`
+
+#### Generates a C++ project from Kattis called Acm:
+
+`java -jar ProjectGenerator.jar Acm -kattis -t cpp_default`
+
+#### Generates a Java project locally with 3 example input files:
+
+`java -jar ProjectGenerator.jar Acm -s 3`
