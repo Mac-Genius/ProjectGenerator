@@ -177,7 +177,7 @@ public class KattisRun extends BaseRun {
         while (inputFile.hasNext()) {
             String tempIn = inputFile.next();
             String tempOut = outputFile.next();
-            output += String.format("test%d=\"$(java %s < %s)\"\n", index, fileName, tempOut);
+            output += String.format("test%d=\"$(java %s < %s)\"\n", index, fileName, tempIn);
             output += String.format("if [[ $test%d == $(cat %s) ]]\n", index, tempOut);
             output += "then\n";
             output += String.format("    printf \"java %s < %s \\033[32m[Correct]\\033[0m\\nExpected: $(cat %s), Actual: ${test%d}\\n\\n\"\n", fileName, tempIn, tempOut, index);
