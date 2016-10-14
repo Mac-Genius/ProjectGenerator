@@ -7,16 +7,25 @@ import io.github.mac_genius.pgen.arguments.SampleFiles;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
 
 /**
- * Created by Mac on 10/13/16.
+ * BaseRun implements some of the default methods that will be used by other modes, such as creating the project
+ * directory.
+ *
+ * @author John Harrison
  */
 public abstract class BaseRun implements GenRun {
     protected FileTemplate template;
     protected File projectDir;
     protected String fileName;
 
+    /**
+     * The constructor for BaseRun.
+     *
+     * @param template - the template to use for this run
+     * @param projectDir - the project directory to create
+     * @param fileName - the name of the directory
+     */
     public BaseRun(FileTemplate template, File projectDir, String fileName) {
         this.template = template;
         this.projectDir = projectDir;
@@ -75,6 +84,12 @@ public abstract class BaseRun implements GenRun {
         }
     }
 
+    /**
+     * Returns what should be included in the java makefile.
+     *
+     * @param inputFiles - a list of example test cases
+     * @return a String containing what should be included in the java makefile
+     */
     public String getJavaMake(SampleFiles inputFiles) {
         String output = "default:\n\tjavac " + fileName + ".java\n";
         for (String inputFile : inputFiles.getInputs()) {
@@ -83,6 +98,12 @@ public abstract class BaseRun implements GenRun {
         return output;
     }
 
+    /**
+     * Returns what should be included in the c++ makefile.
+     *
+     * @param inputFiles - a list of example test cases
+     * @return a String containing what should be included in the c++ makefile
+     */
     public String getCppMake(SampleFiles inputFiles) {
         String output = String.format("default: %s\n", fileName + ".o");
         output += String.format("\tgcc -o %s %s -I.\n", fileName, fileName + ".o");

@@ -16,14 +16,27 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 /**
- * Created by Mac on 10/13/16.
+ * The run for Kattis. This will generate the project directory, download the sample use cases with answers, create the
+ * template file, a makefile, and a test script.
+ *
+ * @author John Harrison
  */
 public class KattisRun extends BaseRun {
 
+    /**
+     * Constructor for KattisRun.
+     *
+     * @param template - the template to use for this run
+     * @param projectDir - the project directory to create
+     * @param fileName - the name of the directory
+     */
     public KattisRun(FileTemplate template, File projectDir, String fileName) {
         super(template, projectDir, fileName);
     }
 
+    /**
+     * Runs the Kattis mode.
+     */
     @Override
     public void run() {
         createProjectDirectory();
@@ -33,6 +46,11 @@ public class KattisRun extends BaseRun {
         createTestScript(inputFiles);
     }
 
+    /**
+     * Downloads the example files from Kattis.
+     *
+     * @return the sample file names
+     */
     private SampleFiles downloadExampleFiles() {
         TreeSet<String> inputFiles = new TreeSet<>();
         TreeSet<String> answerFiles = new TreeSet<>();
@@ -119,6 +137,11 @@ public class KattisRun extends BaseRun {
         }
     }
 
+    /**
+     * Creates the test script for running your program against the test cases.
+     *
+     * @param inputFiles - a list of example file names
+     */
     public void createTestScript(SampleFiles inputFiles) {
         System.out.println("Generating the test script...");
         try {
@@ -140,6 +163,12 @@ public class KattisRun extends BaseRun {
         }
     }
 
+    /**
+     * Returns what should be included in the java test script.
+     *
+     * @param inputFiles - a list of example file names
+     * @return a String containing the contents for the java test script
+     */
     private String getJavaTestScript(SampleFiles inputFiles) {
         String output = "";
         int index = 1;
@@ -160,6 +189,12 @@ public class KattisRun extends BaseRun {
         return output;
     }
 
+    /**
+     * Returns what should be included in the c++ test script.
+     *
+     * @param inputFiles - a list of example file names
+     * @return a String containing the contents for the c++ test script
+     */
     private String getCppTestScript(SampleFiles inputFiles) {
         String output = "";
         int index = 1;

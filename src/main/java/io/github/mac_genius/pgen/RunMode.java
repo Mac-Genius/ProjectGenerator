@@ -1,7 +1,9 @@
 package io.github.mac_genius.pgen;
 
 /**
- * Created by Mac on 10/13/16.
+ * The different modes the generator currently supports.
+ *
+ * @author John Harrison
  */
 public enum RunMode {
     KATTIS,

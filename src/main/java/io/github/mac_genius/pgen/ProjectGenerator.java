@@ -15,6 +15,12 @@ import java.io.File;
  * @author John Harrison
  */
 public class ProjectGenerator {
+
+    /**
+     * The main function of the program.
+     *
+     * @param args - the arguments for the generator
+     */
     public static void main(String args[]) {
         if (args.length < 1) {
             System.out.println("usage: pgen <project name> <args>");
@@ -33,6 +39,12 @@ public class ProjectGenerator {
         }
     }
 
+    /**
+     * Parses the arguments from the commandline and returns them.
+     *
+     * @param args - the arguments from the commandline
+     * @return an Arguments class containing all of the parsed arguments from the command line
+     */
     public static Arguments parseArgs(String args[]) {
         // Set defaults
         ArgumentBuilder builder = new ArgumentBuilder();
@@ -71,6 +83,9 @@ public class ProjectGenerator {
         return builder.build();
     }
 
+    /**
+     * Prints out the help menu.
+     */
     private static void help() {
         System.out.println("usage: pgen <project name> <args>");
         System.out.println("Arguments:");

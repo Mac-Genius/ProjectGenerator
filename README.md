@@ -2,7 +2,7 @@
 
 A simple project generator for when you want to work on a programming problem
 on Kattis or another code site of you choice. It currently generates only .java
-template files.
+and C++ template files.
 
 ## Usage
 

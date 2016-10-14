@@ -9,16 +9,30 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * Created by Mac on 10/13/16.
+ * The default run choice for the project generator. It will create the project directory, the template file, a
+ * makefile, and empty example test cases.
+ *
+ * @author John Harrison
  */
 public class LocalRun extends BaseRun {
     private int amount;
 
+    /**
+     * Constructor for LocalRun.
+     *
+     * @param template - the template to use for this run
+     * @param projectDir - the project directory to create
+     * @param fileName - the name of the directory
+     * @param amount - the amount of example test cases to generate
+     */
     public LocalRun(FileTemplate template, File projectDir, String fileName, int amount) {
         super(template, projectDir, fileName);
         this.amount = amount;
     }
 
+    /**
+     * Runs the mode.
+     */
     @Override
     public void run() {
         createProjectDirectory();
@@ -30,7 +44,8 @@ public class LocalRun extends BaseRun {
     /**
      * Create the example files.
      *
-     * @param amount     - the amount of example files to create
+     * @param amount - the amount of example files to create
+     * @return a collection of example file names
      */
     private Collection<String> createExampleFiles(int amount) {
         ArrayList<String> files = new ArrayList<>();
