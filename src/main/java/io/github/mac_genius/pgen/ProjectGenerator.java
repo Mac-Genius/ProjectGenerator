@@ -1,6 +1,12 @@
 package io.github.mac_genius.pgen;
 
-import java.io.*;
+import io.github.mac_genius.pgen.arguments.ArgumentBuilder;
+import io.github.mac_genius.pgen.arguments.Arguments;
+import io.github.mac_genius.pgen.modes.GenRun;
+import io.github.mac_genius.pgen.modes.KattisRun;
+import io.github.mac_genius.pgen.modes.LocalRun;
+
+import java.io.File;
 
 /**
  * ProjectGenerator is designed to create template project directories for hacking with Kattis or another code site of
@@ -10,98 +16,72 @@ import java.io.*;
  */
 public class ProjectGenerator {
     public static void main(String args[]) {
-        if (args.length < 2) {
-            System.out.println("usage: pgen <project name> <# of test cases>");
+        if (args.length < 1) {
+            System.out.println("usage: pgen <project name> <args>");
         } else {
-            int amount = Integer.parseInt(args[1]);
-            File projectDir = new File(System.getProperty("user.dir"), args[0]);
-            if (projectDir.exists()) {
-                System.out.println(args[1] + " already exists!");
-            } else {
-                System.out.println("Creating the project directory...");
-                if (projectDir.mkdir()) {
-                    createJavaFile(projectDir, args[0]);
-                    createExampleFiles(projectDir, args[0], amount);
-                    createMakeFile(projectDir, args[0], amount);
-                    System.out.println("Done!");
-                } else {
-                    System.out.println("Failed to create the project directory!");
-                }
+            Arguments arguments = parseArgs(args);
+            File projectDir = new File(System.getProperty("user.dir"), arguments.getFileName());
+            GenRun run = null;
+            switch (arguments.getMode()) {
+                case KATTIS:
+                    run = new KattisRun(arguments.getFileTemplate(), projectDir, arguments.getFileName());
+                    break;
+                default:
+                    run = new LocalRun(arguments.getFileTemplate(), projectDir, arguments.getFileName(), arguments.getExampleSize());
             }
+            run.run();
         }
     }
 
-    /**
-     * Creates a template .java file.
-     *
-     * @param projectDir - the directory to create the file in
-     * @param fileName - the name of the project directory
-     */
-    private static void createJavaFile(File projectDir, String fileName) {
-        System.out.println("Generating .java file...");
-        try {
-            File file = new File(projectDir, fileName + ".java");
-            if (file.createNewFile()) {
-                String output = "import java.util.*;\nimport java.io.*;\n\n";
-                output += "public class " + fileName + " {\n";
-                output += "    public static void main(String args[]) throws IOException {\n";
-                output += "        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));\n\n";
-                output += "    }\n";
-                output += "}\n";
-                FileOutputStream out = new FileOutputStream(file, false);
-                out.write(output.getBytes());
-                out.close();
-            } else {
-                System.out.println("Failed to generate the .java file!");
+    public static Arguments parseArgs(String args[]) {
+        // Set defaults
+        ArgumentBuilder builder = new ArgumentBuilder();
+        builder.setFileName(args[0]);
+        builder.setMode(RunMode.LOCAL);
+        builder.setExampleSize(2);
+        builder.setFileTemplate(FileTemplate.JAVA_DEFAUlT);
+
+        for (int i = 1; i < args.length; i++) {
+            switch (args[i]) {
+                case "-h":
+                case "-help":
+                    help();
+                    break;
+                case "-size":
+                case "-s":
+                    builder.setExampleSize(Integer.parseInt(args[i + 1]));
+                    i++;
+                    break;
+                case "-kattis":
+                    builder.setMode(RunMode.KATTIS);
+                    break;
+                case "-local":
+                    builder.setMode(RunMode.LOCAL);
+                    break;
+                case "-template":
+                case "-t":
+                    builder.setFileTemplate(FileTemplate.valueOf(args[i + 1].toUpperCase()));
+                    i++;
+                    break;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+        if (builder.getMode() == RunMode.LOCAL && builder.isExampleSizeSetManual()) {
+            System.out.println("No example size set, using default of 2.");
+        }
+        return builder.build();
     }
 
-    /**
-     * Create the example files.
-     *
-     * @param projectDir - the directory to create the file in
-     * @param fileName - the name of the project directory
-     * @param amount - the amount of example files to create
-     */
-    private static void createExampleFiles(File projectDir, String fileName, int amount) {
-        System.out.println("Generating example input files...");
-        for (int i = 0; i < amount; i++) {
-            try {
-                File file = new File(projectDir, fileName + "-" + (i + 1) + ".in");
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * Create the makefile.
-     *
-     * @param projectDir - the directory to create the file in
-     * @param fileName - the name of the project directory
-     * @param amount - the amount of example files to create
-     */
-    private static void createMakeFile(File projectDir, String fileName, int amount) {
-        System.out.println("Generating makefile...");
-        try {
-            File file = new File(projectDir, "makefile");
-            if (file.createNewFile()) {
-                FileOutputStream out = new FileOutputStream(file, false);
-                String output = "default:\n\t\tjavac " + fileName + ".java\n";
-                for (int i = 0; i < amount; i++) {
-                    output += "\t\tjava " + fileName + " < " + fileName + "-" + (i + 1) + ".in\n";
-                }
-                out.write(output.getBytes());
-                out.close();
-            } else {
-                System.out.println("Failed to create the makefile!");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private static void help() {
+        System.out.println("usage: pgen <project name> <args>");
+        System.out.println("Arguments:");
+        System.out.println("\t-h | -help : help menu");
+        System.out.println("\t-s | -size <example file amount> : the amount of example files to create. Defaults to 2");
+        System.out.println("\t-t | -template <template> : the template to use. Defaults to java_default");
+        System.out.println("\t\tValid Templates:");
+        System.out.println("\t\t\t* java_default");
+        System.out.println("\t\t\t* cpp_default");
+        System.out.println("\t-kattis : fetches the problems from Kattis and creates a makefile and test script for them");
+        System.out.println("\t-local : fetches nothing and creates empty example files");
+        System.exit(0);
     }
 }
