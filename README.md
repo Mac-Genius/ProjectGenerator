@@ -4,6 +4,10 @@ A simple project generator for when you want to work on a programming problem
 on Kattis or another code site of you choice. It currently generates only .java
 and C++ template files.
 
+## Download
+
+You can download the latest version from my dropbox [here](https://www.dropbox.com/s/8cmu0izqa488nvd/ProjectGenerator.jar?dl=0).
+
 ## Usage
 
 Just execute the generator with the following command:
