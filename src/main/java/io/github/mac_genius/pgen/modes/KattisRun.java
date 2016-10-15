@@ -103,7 +103,7 @@ public class KattisRun extends BaseRun {
     }
 
     private boolean isInputFile(String name) {
-        Pattern pattern = Pattern.compile("[a-zA-Z0-9-_]*\\.[a-zA-Z0-9]*(in)[a-zA-Z0-9]*");
+        Pattern pattern = Pattern.compile("[a-zA-Z0-9-_.]*\\.[a-zA-Z0-9]*(in)[a-zA-Z0-9]*");
         Matcher match = pattern.matcher(name);
         return match.matches();
     }
